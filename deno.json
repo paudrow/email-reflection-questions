@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "dev": "deno run --watch main.ts",
+    "start": "deno run -A main.ts"
+  },
+  "unstable": [
+    "cron"
+  ]
+}
