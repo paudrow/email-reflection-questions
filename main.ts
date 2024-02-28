@@ -19,7 +19,7 @@ if (!fromEmail) {
 
 const client = new postmark.ServerClient(serverToken);
 
-Deno.cron("send emails to reflect on", "* * * * *", async () => {
+Deno.cron("send emails to reflect on", "0 19 * * 3,5", async () => {
   const randomIndex = Math.floor(Math.random() * questions.length);
   const question = questions[randomIndex];
 
