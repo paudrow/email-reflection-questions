@@ -16,11 +16,14 @@ const fromEmail = Deno.env.get("FROM_EMAIL");
 if (!fromEmail) {
   throw new Error("FROM_EMAIL is required");
 }
+const cronSchedule = Deno.env.get("CRON_SCHEDULE");
+if (!cronSchedule) {
+  throw new Error("CRON_SCHEDULE is required");
+}
 
 const client = new postmark.ServerClient(serverToken);
 
-// Send an email every Wednesday and Friday at 1pm, Texas time
-Deno.cron("send emails to reflect on", "0 19 * * 3,5", async () => {
+Deno.cron("send emails to reflect on", cronSchedule, async () => {
   const randomIndex = Math.floor(Math.random() * questions.length);
   const question = questions[randomIndex];
 
