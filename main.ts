@@ -16,20 +16,22 @@ const fromEmail = Deno.env.get("FROM_EMAIL");
 if (!fromEmail) {
   throw new Error("FROM_EMAIL is required");
 }
+const replyTo = Deno.env.get("REPLY_TO_EMAIL");
+if (!replyTo) {
+  throw new Error("REPLY_TO_EMAIL is required");
+}
 
 const client = new postmark.ServerClient(serverToken);
 
-Deno.cron("send emails to reflect on", "0 19 * * 2,5", async () => {
-  const randomIndex = Math.floor(Math.random() * questions.length);
-  const question = questions[randomIndex];
+const randomIndex = Math.floor(Math.random() * questions.length);
+const question = questions[randomIndex];
 
-  await client.sendEmail({
-    From: fromEmail,
-    To: toEmail,
-    Subject: "A question for you",
-    TextBody: question,
-  });
-
-  console.log("Sent email: ", question);
+await client.sendEmail({
+  From: fromEmail,
+  To: toEmail,
+  ReplyTo: replyTo,
+  Subject: "A question for you",
+  TextBody: question,
 });
-console.log("Cron job scheduled");
+
+console.log("Sent email: ", question);
