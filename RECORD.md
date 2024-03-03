@@ -18,4 +18,12 @@ Next steps:
   1. Sends email on a cron job
   2. Saves replies to the KV database
   3. Sends a reply to the email
-- [ ] Create a web interface to view the replies.
+- [x] Create a web interface to view the replies.
+
+Future work:
+
+- [ ] Add the ability to configure the cron job from the web interface.
+- [ ] Make the email better looking
+- [ ] Add the ability to configure questions from the web interface.
+- [ ] Use a real router like [oak](https://deno.land/x/oak) instead of the
+      built-in `http` module.
