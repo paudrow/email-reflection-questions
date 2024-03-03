@@ -1,4 +1,5 @@
 import { Email, Reply } from "./types.ts";
+import { ulid } from "https://deno.land/x/ulid/mod.ts";
 
 export function emailToRelpy(email: Email, fromEmail: string): Reply {
   let question = "";
@@ -15,10 +16,13 @@ export function emailToRelpy(email: Email, fromEmail: string): Reply {
     }
   });
 
-  return Reply.parse({
+  const reply: Reply = {
+    id: ulid(),
     question: question.trim().replace(/\n+$/, ""),
     answer: answer.trim().replace(/\n+$/, ""),
-    time: email.Date,
+    date: email.Date,
     who: email.From,
-  });
+  };
+
+  return Reply.parse(reply);
 }

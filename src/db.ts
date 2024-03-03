@@ -32,6 +32,34 @@ function byDate(a: Reply, b: Reply) {
 export class Db {
   constructor(private kv: Deno.Kv) {}
 
+  async getUsers() {
+    const users = new Set<string>();
+    for await (const entry of this.kv.list({ prefix: [] })) {
+      users.add(entry.key[0].toString());
+    }
+    return Array.from(users);
+  }
+
+  async toString() {
+    const users = await this.getUsers();
+
+    let out = "";
+    if (users.length === 0) {
+      out += "No users found\n";
+    }
+    for (const user of users) {
+      out += user + "\n";
+      const replies = await this.getReplies(user.toString());
+      if (replies.length === 0) {
+        out += "  No replies found\n";
+      }
+      for (const reply of replies) {
+        out += `  ${reply.question} - ${reply.answer}\n`;
+      }
+    }
+    return out;
+  }
+
   async createReply(user: string, reply: Reply) {
     const datePath = this.repliesForSpecificIdPath(user, reply.id);
     this.kv.set(datePath, reply);

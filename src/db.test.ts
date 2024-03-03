@@ -84,4 +84,12 @@ describe("db", () => {
     assertEquals((await db.getReplies(user)).length, 0);
     assertEquals(await db.getReplies(user), []);
   });
+
+  it("should get all users", async () => {
+    assertEquals(await db.getUsers(), []);
+    await db.createReply(user, replyRed);
+    assertEquals(await db.getUsers(), [user]);
+    await db.createReply(user, replyBlue);
+    assertEquals(await db.getUsers(), [user]);
+  });
 });
