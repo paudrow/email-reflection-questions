@@ -28,7 +28,7 @@ const postmarkClient = new postmark.ServerClient(serverToken);
 const kv = await Deno.openKv();
 const db = new Db(kv);
 
-Deno.cron("Send question by email", "0 17 * * *", async () => {
+const sendEmail = async () => {
   const randomIndex = Math.floor(Math.random() * questions.length);
   const question = questions[randomIndex];
   await postmarkClient.sendEmail({
@@ -39,6 +39,10 @@ Deno.cron("Send question by email", "0 17 * * *", async () => {
     TextBody: question,
   });
   console.log("Sent email: ", question);
+};
+
+Deno.cron("Send question by email", "0 17 * * *", async () => {
+  await sendEmail();
 });
 
 Deno.serve(async (req: Request) => {
@@ -70,6 +74,9 @@ Deno.serve(async (req: Request) => {
   } else if (req.url.endsWith("/data")) {
     const data = await db.toString();
     return new Response(data, { status: 200 });
+  } else if (req.url.endsWith("/send-email")) {
+    await sendEmail();
+    return new Response("Email sent", { status: 200 });
   } else {
     return new Response("Not found", { status: 404 });
   }
