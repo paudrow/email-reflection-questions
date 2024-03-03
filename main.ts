@@ -28,7 +28,7 @@ const postmarkClient = new postmark.ServerClient(serverToken);
 const kv = await Deno.openKv();
 const db = new Db(kv);
 
-Deno.cron("Send question by email", "* * * * *", async () => {
+Deno.cron("Send question by email", "0 17 * * *", async () => {
   const randomIndex = Math.floor(Math.random() * questions.length);
   const question = questions[randomIndex];
   await postmarkClient.sendEmail({
