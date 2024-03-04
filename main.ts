@@ -45,6 +45,7 @@ Deno.cron("Send question by email", "0 17 * * *", async () => {
   await sendEmail();
 });
 
+const isConfirmEmail = false;
 Deno.serve(async (req: Request) => {
   if (req.url.endsWith("/webhook/inbound-email")) {
     if (req.body) {
@@ -56,14 +57,16 @@ Deno.serve(async (req: Request) => {
       await db.createReply(email.From, reply);
       console.log("Received email: ", reply);
 
-      const textBody =
-        `Got it! Response saved.\n\n${reply.question}\n${reply.answer}`;
-      await postmarkClient.sendEmail({
-        From: fromEmail,
-        To: email.From,
-        Subject: email.Subject,
-        TextBody: textBody,
-      });
+      if (isConfirmEmail) {
+        const textBody =
+          `Got it! Response saved.\n\n${reply.question}\n${reply.answer}`;
+        await postmarkClient.sendEmail({
+          From: fromEmail,
+          To: email.From,
+          Subject: email.Subject,
+          TextBody: textBody,
+        });
+      }
 
       return new Response("Email processed", { status: 200 });
     } else {
